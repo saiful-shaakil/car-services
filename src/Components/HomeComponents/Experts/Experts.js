@@ -18,13 +18,13 @@ const Experts = () => {
     { id: 6, name: "Eva Jhonson", img: expert6 },
   ];
   return (
-    <div className="container">
+    <div className="container" id="experts">
       <h2 className="text-primary text-center mt-5">Our Experts</h2>
-      <CardGroup>
+      <div className="row g-5">
         {experts.map((expert) => (
           <Expert key={expert.id} expert={expert}></Expert>
         ))}
-      </CardGroup>
+      </div>
     </div>
   );
 };

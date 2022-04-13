@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 const Service = ({ service }) => {
   const navigate = useNavigate();
   const detailsAboutEachService = () => {
-    navigate("/service");
+    navigate(`/service/${service.name}`);
   };
   return (
     <Card className="col-4">
@@ -15,7 +15,12 @@ const Service = ({ service }) => {
         <Card.Text>{service.description}</Card.Text>
       </Card.Body>
       <Card.Footer>
-        <button onClick={detailsAboutEachService}>Details</button>
+        <button
+          className="btn btn-primary w-100"
+          onClick={detailsAboutEachService}
+        >
+          Details
+        </button>
       </Card.Footer>
     </Card>
   );
