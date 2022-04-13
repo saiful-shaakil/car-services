@@ -1,7 +1,12 @@
 import React from "react";
 import { Card } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const Service = ({ service }) => {
+  const navigate = useNavigate();
+  const detailsAboutEachService = () => {
+    navigate("/service");
+  };
   return (
     <Card className="col-4">
       <Card.Img variant="top" className="w-100" src={service.img} />
@@ -10,7 +15,7 @@ const Service = ({ service }) => {
         <Card.Text>{service.description}</Card.Text>
       </Card.Body>
       <Card.Footer>
-        <small className="text-muted">Last updated 3 mins ago</small>
+        <button onClick={detailsAboutEachService}>Details</button>
       </Card.Footer>
     </Card>
   );
