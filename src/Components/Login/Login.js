@@ -1,6 +1,9 @@
 import React, { useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import {
+  useSendPasswordResetEmail,
+  useSignInWithEmailAndPassword,
+} from "react-firebase-hooks/auth";
 import auth from "../../firebase.init";
 import SocialLogin from "../SocialLogin/SocialLogin";
 
@@ -10,6 +13,7 @@ const Login = (event) => {
   const from = location.state?.from?.pathname || "/";
   const [signInWithEmailAndPassword, user, loading, error] =
     useSignInWithEmailAndPassword(auth);
+  const [sendPasswordResetEmail] = useSendPasswordResetEmail(auth);
   const formRef = useRef("");
   const handleSubmit = () => {
     const email = formRef.current.email.value;
@@ -17,6 +21,12 @@ const Login = (event) => {
     signInWithEmailAndPassword(email, pass);
     navigate(from, { replace: true });
     event.preventDefault();
+  };
+
+  const resetPassword = async () => {
+    const email = formRef.current.email.value;
+    await sendPasswordResetEmail(email);
+    alert("Sent Email");
   };
 
   return (
@@ -47,9 +57,18 @@ const Login = (event) => {
       </form>
       <p className="text-center w-100 mt-3">
         New to car genius? &nbsp;
-        <Link to="/register" className="text-decoration-none text-success ">
+        <Link to="/register" className="text-decoration-none text-primary ">
           Register
         </Link>
+      </p>
+      <p className="text-center w-100 mt-3">
+        Forget password? &nbsp;
+        <button
+          onClick={resetPassword}
+          className="text-decoration-none text-primary border-0 bg-white"
+        >
+          Reset Now
+        </button>
       </p>
       <SocialLogin></SocialLogin>
     </div>

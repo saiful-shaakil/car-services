@@ -43,6 +43,8 @@ const Register = () => {
           id=""
           required
         />
+        <input className="mb-2" type="checkbox" name="terms" id="terms" />
+        &nbsp; <label htmlFor="terms">Accept terms and conditions</label>
         <input
           onClick={handleSubmit}
           className="w-100 btn btn-primary"
