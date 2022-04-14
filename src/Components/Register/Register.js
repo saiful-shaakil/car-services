@@ -1,25 +1,48 @@
-import React, { useRef } from "react";
-import { Link } from "react-router-dom";
-import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
+import React, { useRef, useState } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import {
+  useCreateUserWithEmailAndPassword,
+  useUpdateProfile,
+} from "react-firebase-hooks/auth";
 import auth from "../../firebase.init";
 import SocialLogin from "../SocialLogin/SocialLogin";
+import Loading from "../Loading/Loading";
 
 const Register = () => {
-  const [createUserWithEmailAndPassword, user, loading, error] =
-    useCreateUserWithEmailAndPassword(auth);
+  const [agree, setAgree] = useState(false);
+  const [createUserWithEmailAndPassword, user] =
+    useCreateUserWithEmailAndPassword(auth, { sendEmailVerification: true });
+  const [updateProfile, updating] = useUpdateProfile(auth);
+  const navigate = useNavigate();
+  const nameRef = useRef("");
   const emailRef = useRef("");
   const passRef = useRef("");
-  const handleSubmit = () => {
+  const checkRef = useRef("");
+  if (updating) {
+    return <Loading></Loading>;
+  }
+  const handleSubmit = async () => {
+    const name = nameRef.current.value;
     const email = emailRef.current.value;
     const pass = passRef.current.value;
-    createUserWithEmailAndPassword(email, pass);
+    // system number 1 for css conditon
+    // const agree = checkRef.current.checked;
+    // if (agree) {
+    //   createUserWithEmailAndPassword(email, pass);
+    // }
+    await createUserWithEmailAndPassword(email, pass);
+    await updateProfile({ displayName: name });
+    console.log(user);
+    if (user) {
+      navigate("/home");
+    }
   };
   return (
     <div className="w-50 mx-auto">
       <h1 className="text-center text-primary">Please Register</h1>
       <form>
         <input
-          ref={emailRef}
+          ref={nameRef}
           placeholder="Enter Your Name"
           className="w-100 mb-2"
           name="name"
@@ -43,9 +66,23 @@ const Register = () => {
           id=""
           required
         />
-        <input className="mb-2" type="checkbox" name="terms" id="terms" />
-        &nbsp; <label htmlFor="terms">Accept terms and conditions</label>
         <input
+          ref={checkRef}
+          onClick={() => setAgree(!agree)}
+          className="mb-3"
+          type="checkbox"
+          name="terms"
+          id="terms"
+        />
+        &nbsp;{" "}
+        <label
+          className={agree ? "text-primary" : "text-danger"}
+          htmlFor="terms"
+        >
+          Accept terms and conditions
+        </label>
+        <input
+          disabled={!agree}
           onClick={handleSubmit}
           className="w-100 btn btn-primary"
           type="button"

@@ -7,7 +7,9 @@ import {
   useSignInWithGoogle,
 } from "react-firebase-hooks/auth";
 import auth from "../../firebase.init";
+import { useNavigate } from "react-router-dom";
 const SocialLogin = () => {
+  const navigate = useNavigate();
   const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth);
   const [signInWithGithub, user1, loading1, error1] = useSignInWithGithub(auth);
   let errorMessage;
@@ -19,6 +21,9 @@ const SocialLogin = () => {
         </p>
       </div>
     );
+  }
+  if (user || user1) {
+    navigate("/home");
   }
   return (
     <div>

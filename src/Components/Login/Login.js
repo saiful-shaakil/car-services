@@ -6,27 +6,35 @@ import {
 } from "react-firebase-hooks/auth";
 import auth from "../../firebase.init";
 import SocialLogin from "../SocialLogin/SocialLogin";
+import Loading from "../Loading/Loading";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = (event) => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
-  const [signInWithEmailAndPassword, user, loading, error] =
+  const [signInWithEmailAndPassword, user, loading] =
     useSignInWithEmailAndPassword(auth);
   const [sendPasswordResetEmail] = useSendPasswordResetEmail(auth);
   const formRef = useRef("");
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
     const email = formRef.current.email.value;
     const pass = formRef.current.pass.value;
     signInWithEmailAndPassword(email, pass);
     navigate(from, { replace: true });
     event.preventDefault();
   };
+  if (loading) {
+    return <Loading></Loading>;
+  }
 
   const resetPassword = async () => {
     const email = formRef.current.email.value;
     await sendPasswordResetEmail(email);
-    alert("Sent Email");
+    if (email) {
+      toast("Sent Email");
+    }
   };
 
   return (
@@ -71,6 +79,7 @@ const Login = (event) => {
         </button>
       </p>
       <SocialLogin></SocialLogin>
+      <ToastContainer />
     </div>
   );
 };
